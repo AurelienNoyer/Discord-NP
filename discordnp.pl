@@ -58,21 +58,21 @@ sub update_status
     # 
     # This call is also optionally non-blocking if a callback function is provided, which we are doing.
     $lastfm->nowplaying({   user     => $config->{'lastfm'}->{'username'}, 
-                            format   => "%artist% - %title%", 
+		    #format   => "%artist% - %title%", 
                             callback => sub 
     {
         my $nowplaying = shift;
 
         if ( defined $nowplaying )
         {
-            if ( $nowplaying ne $last_played )
-            {
+		if ( $nowplaying->{'nowplaying'} eq 'true' )
+		{
                 # If we received a valid response from Last.FM and a new song is playing, update our info.
-                $np = $nowplaying;
+                $np = $nowplaying->{'artist'} . ' - ' . $nowplaying->{'title'};
 
                 # Now connect to discord. Receiving the READY packet from Discord will trigger the status update automatically.
                 $discord->init(); 
-            }
+		}
         }
         else
         {
